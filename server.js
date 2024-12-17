@@ -27,11 +27,11 @@ app.post('/create-checkout-session', async (req, res) => {
                     quantity: seats,
                 },
             ],
-            mode: 'payment',
-            client_reference_id: clientReferenceId,
-            success_url: 'https://new.biaw.com/thank-you',
-            cancel_url: 'https://new.biaw.com/payment-declined',
-            allow_promotion_codes: true, // Enable promo codes
+            // mode: 'payment',
+            // client_reference_id: clientReferenceId,
+            // success_url: 'https://new.biaw.com/thank-you',
+            // cancel_url: 'https://new.biaw.com/payment-declined',
+            // allow_promotion_codes: true, // Enable promo codes
         });
 
         res.json({ url: session.url });
