@@ -14,34 +14,32 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get('/create-checkout-session', (req, res) => { res.status(200).send('Test: Hello World!'); });
+// Endpoint to create a checkout session
+app.post('/create-checkout-session', async (req, res) => {
+    try {
+        const { seats, clientReferenceId, priceId } = req.body;
 
-// // Endpoint to create a checkout session
-// app.post('/create-checkout-session', async (req, res) => {
-//     try {
-//         const { seats, clientReferenceId, priceId } = req.body;
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: seats,
+                },
+            ],
+            mode: 'payment',
+            client_reference_id: clientReferenceId,
+            success_url: 'https://new.biaw.com/thank-you',
+            cancel_url: 'https://new.biaw.com/payment-declined',
+            allow_promotion_codes: true, // Enable promo codes
+        });
 
-//         const session = await stripe.checkout.sessions.create({
-//             payment_method_types: ['card'],
-//             line_items: [
-//                 {
-//                     price: priceId,
-//                     quantity: seats,
-//                 },
-//             ],
-//             mode: 'payment',
-//             client_reference_id: clientReferenceId,
-//             success_url: 'https://new.biaw.com/thank-you',
-//             cancel_url: 'https://new.biaw.com/payment-declined',
-//             allow_promotion_codes: true, // Enable promo codes
-//         });
-
-//         res.json({ url: session.url });
-//     } catch (error) {
-//         console.error('Error creating checkout session:', error.message);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Error creating checkout session:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 // Start server
 app.listen(PORT, () => {
